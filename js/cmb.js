@@ -2,25 +2,25 @@
  * Custom jQuery for Custom Metaboxes and Fields
  */
 
-/*jslint browser: true, devel: true, indent: 4, maxerr: 50, sub: true */
-/*global jQuery, tb_show, tb_remove */
+ /*jslint browser: true, devel: true, indent: 4, maxerr: 50, sub: true */
+ /*global jQuery, tb_show, tb_remove */
 
-'use strict';
+ 'use strict';
 
-var CMB = {
+ var CMB = {
 
-	_initCallbacks: [],
-	_clonedFieldCallbacks: [],
-	_deletedFieldCallbacks: [],
+ 	_initCallbacks: [],
+ 	_clonedFieldCallbacks: [],
+ 	_deletedFieldCallbacks: [],
 
-	_sortStartCallbacks: [],
-	_sortEndCallbacks: [],
-	
-	init : function() {
+ 	_sortStartCallbacks: [],
+ 	_sortEndCallbacks: [],
 
-		jQuery( '.field.repeatable' ).each( function() {
-			CMB.isMaxFields( jQuery(this) );
-		} );
+ 	init : function() {
+
+ 		jQuery( '.field.repeatable' ).each( function() {
+ 			CMB.isMaxFields( jQuery(this) );
+ 		} );
 
 		// Unbind & Re-bind all CMB events to prevent duplicates.
 		jQuery(document).unbind( 'click.CMB' );
@@ -64,50 +64,50 @@ var CMB = {
 		newT.insertBefore( templateField );
 
 		 // Recalculate group ids & update the name fields..
-		index = 0;
-		attr  = ['id','name','for','data-id','data-name'];
+		 index = 0;
+		 attr  = ['id','name','for','data-id','data-name'];
 
-		field.children( '.field-item' ).not( templateField ).each( function() {
+		 field.children( '.field-item' ).not( templateField ).each( function() {
 
-			var search  = field.hasClass( 'CMB_Group_Field' ) ? /cmb-group-(\d|x)*/g : /cmb-field-(\d|x)*/g;
-			var replace = field.hasClass( 'CMB_Group_Field' ) ? 'cmb-group-' + index : 'cmb-field-' + index;
+		 	var search  = field.hasClass( 'CMB_Group_Field' ) ? /cmb-group-(\d|x)*/g : /cmb-field-(\d|x)*/g;
+		 	var replace = field.hasClass( 'CMB_Group_Field' ) ? 'cmb-group-' + index : 'cmb-field-' + index;
 
-			jQuery(this).find( '[' + attr.join('],[') + ']' ).each( function() {
+		 	jQuery(this).find( '[' + attr.join('],[') + ']' ).each( function() {
 
-				for ( var i = 0; i < attr.length; i++ )
-					if ( typeof( jQuery(this).attr( attr[i] ) ) !== 'undefined' )
-						jQuery(this).attr( attr[i], jQuery(this).attr( attr[i] ).replace( search, replace ) );
+		 		for ( var i = 0; i < attr.length; i++ )
+		 			if ( typeof( jQuery(this).attr( attr[i] ) ) !== 'undefined' )
+		 				jQuery(this).attr( attr[i], jQuery(this).attr( attr[i] ).replace( search, replace ) );
 
-			} );
+		 		} );
 
-			index += 1;
+		 	index += 1;
 
-		} );
+		 } );
 
-		CMB.clonedField( newT );
+		 CMB.clonedField( newT );
 
-		if ( field.hasClass( 'cmb-sortable' ) )
-			CMB.sortableInit( field );
+		 if ( field.hasClass( 'cmb-sortable' ) )
+		 	CMB.sortableInit( field );
 
 
-	},
+		},
 
-	deleteField : function( e ) {
+		deleteField : function( e ) {
 
-		var fieldItem, field;
+			var fieldItem, field;
 
-		e.preventDefault();
-		jQuery(this).blur();
+			e.preventDefault();
+			jQuery(this).blur();
 
-		fieldItem = jQuery( this ).closest('.field-item' );
-		field     = fieldItem.closest( '.field' );
+			fieldItem = jQuery( this ).closest('.field-item' );
+			field     = fieldItem.closest( '.field' );
 
-		CMB.isMaxFields( field, -1 );
-		CMB.deletedField( fieldItem );
+			CMB.isMaxFields( field, -1 );
+			CMB.deletedField( fieldItem );
 
-		fieldItem.remove();
+			fieldItem.remove();
 
-	},
+		},
 
 	/**
 	 * Prevent having more than the maximum number of repeatable fields.
@@ -118,13 +118,13 @@ var CMB = {
 	 * @param int modifier - adjust count by this ammount. 1 If adding a field, 0 if checking, -1 if removing a field... etc
 	 * @return null
 	 */
-	isMaxFields: function( field, modifier ) {
+	 isMaxFields: function( field, modifier ) {
 
-		var count, addBtn, min, max, count;
+	 	var count, addBtn, min, max, count;
 
-		modifier = (modifier) ? parseInt( modifier, 10 ) : 0;
+	 	modifier = (modifier) ? parseInt( modifier, 10 ) : 0;
 
-		addBtn = field.children( '.repeat-field' );
+	 	addBtn = field.children( '.repeat-field' );
 		count  = field.children('.field-item').not('.hidden').length + modifier; // Count after anticipated action (modifier)
 		max    = field.attr( 'data-rep-max' );
 
@@ -155,35 +155,35 @@ var CMB = {
 	 * Fire init callbacks.
 	 * Called when CMB has been set up.
 	 */
-	doneInit: function() {
+	 doneInit: function() {
 
-		var _this = this,
-			callbacks = CMB._initCallbacks;
+	 	var _this = this,
+	 	callbacks = CMB._initCallbacks;
 
-		if ( callbacks ) {
-			for ( var a = 0; a < callbacks.length; a++) {
-				callbacks[a]();
-			}
-		}
+	 	if ( callbacks ) {
+	 		for ( var a = 0; a < callbacks.length; a++) {
+	 			callbacks[a]();
+	 		}
+	 	}
 
-	},
+	 },
 
-	addCallbackForClonedField: function( fieldName, callback ) {
+	 addCallbackForClonedField: function( fieldName, callback ) {
 
-		if ( jQuery.isArray( fieldName ) )
-			for ( var i = 0; i < fieldName.length; i++ )
-				CMB.addCallbackForClonedField( fieldName[i], callback );
+	 	if ( jQuery.isArray( fieldName ) )
+	 		for ( var i = 0; i < fieldName.length; i++ )
+	 			CMB.addCallbackForClonedField( fieldName[i], callback );
 
-		this._clonedFieldCallbacks[fieldName] = this._clonedFieldCallbacks[fieldName] ? this._clonedFieldCallbacks[fieldName] : []
-		this._clonedFieldCallbacks[fieldName].push( callback )
+	 		this._clonedFieldCallbacks[fieldName] = this._clonedFieldCallbacks[fieldName] ? this._clonedFieldCallbacks[fieldName] : []
+	 		this._clonedFieldCallbacks[fieldName].push( callback )
 
-	},
+	 	},
 
 	/**
 	 * Fire clonedField callbacks.
 	 * Called when a field has been cloned.
 	 */
-	clonedField: function( el ) {
+	 clonedField: function( el ) {
 
 		// also check child elements
 		el.add( el.find( 'div[data-class]' ) ).each( function( i, el ) {
@@ -195,7 +195,7 @@ var CMB = {
 				for ( var a = 0; a < callbacks.length; a++ )
 					callbacks[a]( el );
 
-		})
+			})
 	},
 
 	addCallbackForDeletedField: function( fieldName, callback ) {
@@ -204,16 +204,16 @@ var CMB = {
 			for ( var i = 0; i < fieldName.length; i++ )
 				CMB._deletedFieldCallbacks( fieldName[i], callback );
 
-		this._deletedFieldCallbacks[fieldName] = this._deletedFieldCallbacks[fieldName] ? this._deletedFieldCallbacks[fieldName] : []
-		this._deletedFieldCallbacks[fieldName].push( callback )
+			this._deletedFieldCallbacks[fieldName] = this._deletedFieldCallbacks[fieldName] ? this._deletedFieldCallbacks[fieldName] : []
+			this._deletedFieldCallbacks[fieldName].push( callback )
 
-	},
+		},
 
 	/**
 	 * Fire deletedField callbacks.
 	 * Called when a field has been cloned.
 	 */
-	deletedField: function( el ) {
+	 deletedField: function( el ) {
 
 		// also check child elements
 		el.add( el.find( 'div[data-class]' ) ).each( function(i, el) {
@@ -225,7 +225,7 @@ var CMB = {
 				for ( var a = 0; a < callbacks.length; a++ )
 					callbacks[a]( el )
 
-		})
+			})
 	},
 	
 	sortableInit : function( field ) {
@@ -252,15 +252,15 @@ var CMB = {
 		
 		// also check child elements
 		el.add( el.find( 'div[data-class]' ) ).each( function(i, el) {
-		
+
 			el = jQuery( el )
 			var callbacks = CMB._sortStartCallbacks[el.attr( 'data-class') ]
-		
+
 			if ( callbacks )
 				for ( var a = 0; a < callbacks.length; a++ )
 					callbacks[a]( el )
 				
-		})
+			})
 
 	},
 
@@ -269,25 +269,25 @@ var CMB = {
 		if ( jQuery.isArray( fieldName ) )
 			for ( var i = 0; i < fieldName.length; i++ )
 				CMB.addCallbackForSortStart( fieldName[i], callback );
-	
-		this._sortStartCallbacks[fieldName] = this._sortStartCallbacks[fieldName] ? this._sortStartCallbacks[fieldName] : []
-		this._sortStartCallbacks[fieldName].push( callback )
-	
-	},
 
-	sortEnd : function ( el ) {
+			this._sortStartCallbacks[fieldName] = this._sortStartCallbacks[fieldName] ? this._sortStartCallbacks[fieldName] : []
+			this._sortStartCallbacks[fieldName].push( callback )
+
+		},
+
+		sortEnd : function ( el ) {
 
 		// also check child elements
 		el.add( el.find( 'div[data-class]' ) ).each( function(i, el) {
-		
+
 			el = jQuery( el )
 			var callbacks = CMB._sortEndCallbacks[el.attr( 'data-class') ]
-		
+
 			if ( callbacks )
 				for ( var a = 0; a < callbacks.length; a++ )
 					callbacks[a]( el )
 				
-		})
+			})
 
 	},
 
@@ -296,16 +296,22 @@ var CMB = {
 		if ( jQuery.isArray( fieldName ) )
 			for ( var i = 0; i < fieldName.length; i++ )
 				CMB.addCallbackForSortEnd( fieldName[i], callback );
-	
-		this._sortEndCallbacks[fieldName] = this._sortEndCallbacks[fieldName] ? this._sortEndCallbacks[fieldName] : []
-		this._sortEndCallbacks[fieldName].push( callback )
-	
+
+			this._sortEndCallbacks[fieldName] = this._sortEndCallbacks[fieldName] ? this._sortEndCallbacks[fieldName] : []
+			this._sortEndCallbacks[fieldName].push( callback )
+
+		}
+
 	}
-	
-}
 
-jQuery(document).ready( function() {
+	jQuery(document).ready( function() {
 
-	CMB.init();
+		CMB.init();
 
-});
+		// Repeatable fields will be also sortables
+		var $cmbSortables = jQuery('.cmb_metabox .repeatable');
+		if ($cmbSortables.length > 0) {
+			$cmbSortables.sortable({items:".field-item:not(.hidden)"});
+		};
+
+	});
